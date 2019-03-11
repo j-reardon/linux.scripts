@@ -5,7 +5,7 @@ from urllib import request
 from json import loads
 
 __directory__ = "{0}/.aur/".format(os.environ['HOME'])
-__url__ = "https://aur.archlinux.org/packages/{0}.git"
+__url__ = "https://aur.archlinux.org/{0}.git"
 
 def local_version(package):
     pkg_ver = ""
@@ -50,6 +50,7 @@ def install(package):
     upgrade(package)
 
 def upgrade(package):
+    print("building and installing {0}...".format(package))
     package_directory = "{0}{1}".format(__directory__, package)
     os.chdir(package_directory)
     subprocess.call(["makepkg"])
@@ -57,6 +58,11 @@ def upgrade(package):
     subprocess.call(["sudo", "pacman", "-U", built_package])
 
 def clone(package):
+    clone_url = __url__.format(package)
+    print("cloning {0}...".format(clone_url))
     os.chdir(__directory__)
-    git.Repo().clone(__url__.format(package))
+    package_directory = "{0}{1}".format(__directory__, package)
+    if not os.path.exists(package_directory):
+        os.makedirs(package_directory)
+    git.Repo.clone_from(clone_url, package_directory)
 
