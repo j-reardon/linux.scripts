@@ -15,14 +15,17 @@ def local_version(package):
         for line in f:
             if "pkgver" in line:
                 split = line.strip('\n').split('=')
-                pkg_ver = split[1]
+                pkg_ver = split[1].strip("'")
             if "pkgrel" in line:
                 split = line.strip('\n').split('=')
-                pkg_rel = split[1]
+                pkg_rel = split[1].strip("'")
             if pkg_ver and pkg_rel:
                 break
     pkg_ver_split = pkg_ver.split('.')
-    return "{0}.{1}.{2}-{3}".format(pkg_ver_split[0], pkg_ver_split[1], pkg_ver_split[2], pkg_rel)
+    if len(pkg_ver_split) > 2:
+        return "{0}.{1}.{2}-{3}".format(pkg_ver_split[0], pkg_ver_split[1], pkg_ver_split[2], pkg_rel)
+    else:
+        return "{0}.{1}-{2}".format(pkg_ver_split[0], pkg_ver_split[1], pkg_rel)
 
 
 def remote_version(package):
@@ -36,6 +39,7 @@ def remote_version(package):
 
 def update(package):
     package_directory = "{0}{1}".format(__directory__, package)
+    print("performing update inside {0}".format(package_directory))
     g = git.Git(package_directory)
     g.reset(hard=True)
     g.clean('-fd')
@@ -53,7 +57,7 @@ def upgrade(package):
     print("building and installing {0}...".format(package))
     package_directory = "{0}{1}".format(__directory__, package)
     os.chdir(package_directory)
-    subprocess.call(["makepkg"])
+    subprocess.call(["makepkg", "-d"])
     built_package = list(filter(lambda x: "pkg.tar.xz" in x, os.listdir(package_directory)))[0]
     subprocess.call(["sudo", "pacman", "-U", built_package])
 
