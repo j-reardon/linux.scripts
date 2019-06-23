@@ -55,7 +55,9 @@ aur-get()
 
 pac-sync()
 {
-	sudo pacman -Syy
+	$HOME/.scripts/arch-rss.py
+	read -p "Press enter to continue"
+	sudo pacman -Sy
 	pacman -Qu
 	python ~/.scripts/aur/aur-update-checker.py
 }
@@ -65,7 +67,7 @@ pac-listsize()
     pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{print $4$5, name}' | sort -h
 }
 
-edit-rc()
+vimrc()
 {
 	vim ~/.bashrc
 	source ~/.bashrc
