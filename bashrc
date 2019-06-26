@@ -11,7 +11,7 @@ alias la='ll -a'
 PS1='[\u@\h \W]\$ '
 
 alias grepps='ps aux | grep'
-alias catbash='cat ~/.bashrc'
+alias catbash='cat ~/.bashrc | grep '
 
 alias shutdown='shutdown -h now'
 
@@ -26,7 +26,7 @@ svim()
 }
 
 # pacman aliases
-alias pac-update='sudo pacman -Su'
+alias pac-update='sudo pacman -Syu'
 alias pac-install='sudo pacman -S'
 alias pac-uninstall='sudo pacman -Rs'
 alias pac-search='pacman -Qs'
@@ -35,7 +35,7 @@ alias pac-listorphans='pacman -Qtdq'
 alias pac-removeorphans='pacman -Rns $(pacman -Qtdq)'
 
 aur="$HOME/.scripts/aur"
-aur-sync()
+aur-check()
 {
 	python -c "import sys; sys.path.append('$aur'); import aur; aur.check_for_updates()" 
 }
@@ -60,13 +60,12 @@ aur-get()
 	python -c "import sys; sys.path.append('$aur'); import aur; aur.clone('$1')"
 }
 
-pac-sync()
+pac-check()
 {
 	$HOME/.scripts/arch-rss.py
 	read -p "Press enter to continue"
-	sudo pacman -Sy
-	pacman -Qu
-	python ~/.scripts/aur/aur-update-checker.py
+	checkupdates
+	aur-check
 }
 
 pac-listsize()
