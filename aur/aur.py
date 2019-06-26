@@ -25,8 +25,10 @@ def get_local_version(package):
     pkg_ver_split = pkg_ver.split('.')
     if len(pkg_ver_split) > 2:
         return "{0}.{1}.{2}-{3}".format(pkg_ver_split[0], pkg_ver_split[1], pkg_ver_split[2], pkg_rel)
-    else:
+    elif len(pkg_ver_split) == 2:
         return "{0}.{1}-{2}".format(pkg_ver_split[0], pkg_ver_split[1], pkg_rel)
+    else:
+        return None
 
 def get_remote_version(package):
     aur_rpc_url = "https://aur.archlinux.org/rpc/?v=5&type=search&by=name&arg="
@@ -39,6 +41,9 @@ def get_remote_version(package):
 
 def has_update(package):
     local_version = get_local_version(package)
+    if local_version is None:
+        print("Failed to parse version for package {0}".format(package))
+        return
     aur_version = get_remote_version(package)
     if local_version != aur_version:
         print("{0} {1} -> {2}".format(package, local_version, aur_version))
