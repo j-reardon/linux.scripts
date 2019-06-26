@@ -33,23 +33,30 @@ alias pac-search='pacman -Qs'
 alias pac-list='pacman -Qe'
 alias pac-listorphans='pacman -Qtdq'
 alias pac-removeorphans='pacman -Rns $(pacman -Qtdq)'
-alias aur-sync='python ~/.scripts/aur/aur-update-checker.py'
+
+aur="$HOME/.scripts/aur"
+aur-sync()
+{
+	python -c "import sys; sys.path.append('$aur'); import aur; aur.check_for_updates()" 
+}
 
 aur-install()
 {
-	aur="$HOME/.scripts/aur"
 	python -c "import sys; sys.path.append('$aur'); import aur; aur.install('$1')" 
 }
 
 aur-update()
 {
-	aur="$HOME/.scripts/aur"
 	python -c "import sys; sys.path.append('$aur'); import aur; aur.update('$1')"
+}
+
+aur-updateall()
+{
+	python -c "import sys; sys.path.append('$aur'); import aur; aur.update_all()"
 }
 
 aur-get()
 {
-	aur="$HOME/.scripts/aur"
 	python -c "import sys; sys.path.append('$aur'); import aur; aur.clone('$1')"
 }
 
