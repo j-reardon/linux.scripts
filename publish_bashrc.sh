@@ -1,8 +1,16 @@
 #!/bin/bash
 
-if [[ -f $HOME/.bashrc ]]; then
-	rm $HOME/.bashrc
+homerc=$HOME/.bashrc
+
+if [[ -L $homerc ]]; then
+	echo "removing existing symlink..."
+	unlink $homerc
 fi
 
-ln -s $HOME/.scripts/bashrc $HOME/.bashrc
-source $HOME/.bashrc
+if [[ -f $homerc ]]; then
+	echo "deleting exiting .bashrc..."
+	mv $homerc $homerc.orig
+fi
+
+ln -s $HOME/.scripts/bashrc $homerc
+source $homerc
